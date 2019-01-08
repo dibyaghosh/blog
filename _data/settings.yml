@@ -1,9 +1,9 @@
 # Change to true for Disqus comments
 disqus:
   comments: true
-  disqus_shortname: 'variationalbayes'
+  disqus_shortname: 'rlprobabilist'
 
-google-ID: 'UA-112060364-1'
+google-ID: 'UA-86100204-1'
 
 menu:
 - {name: 'About Me', path: 'menu', url: 'https://dibyaghosh.com'}
