@@ -33,7 +33,7 @@
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="The-Graphical-Model">The Graphical Model<a class="anchor-link" href="#The-Graphical-Model">&#182;</a></h2><p>Trajectories in an MDP as detailed above can be modelled by the following graphical model.</p>
-<p><img src="/assets/posts/controlasinference/state_action.png" alt="State Action"></p>
+<p><img src="/blog/assets/posts/controlasinference/state_action.png" alt="State Action"></p>
 <p>The graphical model has a state variable $S_t$, an action variable $A_t$ for each timestep $t$.</p>
 <p>We'll define the distributions of the variables in this graphical model in a way such that the probability of a trajectory $\tau = (s_0, a_0, s_1, a_1, \dots s_T)$ is equal to the probability of the trajectory under the MDP's dynamics.</p>
 <p>We set the distribution of $S_0$  to be $\rho(s)$ (the initial state distribution of the MDP).</p>
@@ -62,7 +62,7 @@
 <p>We'll say that an agent is <strong>optimal</strong> at timestep $t$ with some probability which depends on the current state and action : $P(\text{Optimal at } t) = f(s_t,a_t)$. We'll embed optimality into our graphical model with a binary random variable at every timestep $e_t$, where $P(e_t = 1 \vert S_t=s_t, A_t=a_t) = f(s_t,a_t)$.</p>
 <p>While we're at it, let's define a function $r(s,a)$ to be $r(s_t,a_t) = \log f(s_t,a_t)$ . The notation is very suggestive, and indeed we'll see very soon that this function $r(s,a)$ plays the role of a reward function.</p>
 <p>The final graphical model, presented below, ends up looking much like one for a Hidden Markov Model.</p>
-<p><img src="/assets/posts/controlasinference/state_action_reward.png" alt="State Action Optimality"></p>
+<p><img src="/blog/assets/posts/controlasinference/state_action_reward.png" alt="State Action Optimality"></p>
 <p>For a trajectory $\tau$, the probability that it is optimal at all timesteps is proportional (exponentially) to the total reward received in the trajectory.</p>
 <p>$$P(\text{All } e_t=1 | \tau)  =\exp (\sum_{t=0}^T r(s_t,a_t))$$</p>
 
