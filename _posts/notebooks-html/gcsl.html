@@ -42,8 +42,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n_actions</span><span class="p">)</span> <span class="c1"># Choose randomly</span>
 </pre></div>
 <p>How can we train an agent $\pi: (s, g, h) \mapsto a$ to learn to reach goals in the environment?</p>
-<p><strong>RL</strong>: The dominant paradigm is reinforcement learning (RL), where you define a <em>reward</em> function $r(s, g) = \begin{cases} 1 &amp; s=g \\ 0 &amp; \text{otherwise}\end{cases}$, and optimize this agent using a value-based RL algorithm (DQN, DDPG, TD3, SAC). This can get quite complicated, and is often difficult to learn in practice.</p>
-<p><strong>Imitation Learning</strong>: If instead, we had access (somehow) to an optimal policy $\pi^*$, that given any state $s$, goal $g$ and time horizon $h$, could return the optimal action $a^*$, we could just use supervised learning to try to match the actions of the expert (MLE). If actions were discrete, this would correspond to a classification problem, and if actions were continuous, this would correspond to a regression problem.</p>
+<p><strong>Imitation Learning</strong>: If (somehow) we had access to an optimal policy $\pi^*$, that given any state $s$, goal $g$ and time horizon $h$, could return the optimal action $a^*$, we could just use supervised learning to try to match the actions of the expert (MLE). If actions were discrete, this would correspond to a classification problem, and if actions were continuous, this would correspond to a regression problem.</p>
 
 </div>
 </div>
