@@ -2,8 +2,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In honor of the namesake of this website, this post will be a small introduction to <strong>variational methods</strong>.  We'll examine how variational methods are used in optimization, statistics, and machine learning.</p>
 <p>If you've never heard the word <em>variational</em> in the context of ML, here's a quick summary:</p>
@@ -18,8 +17,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Background">Background<a class="anchor-link" href="#Background">&#182;</a></h2>
 </div>
@@ -30,26 +28,22 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Variational methods are typically grounded in the context of graphical models. We won't delve too deep into graphical models, but you should be generally familiar with key probabilistic concepts. Let's explore using the simple, commonly recurring,  probabilistic model below.</p>
 <p><img src="/assets/posts/variationalinference/simple_model.png" style="width:100px"></p>
 <p>Here $X$ is an <strong>observed variable</strong> which corresponds to data we see, and $Z$ is a <strong>latent variable</strong> which determines salient features of $X$.</p>
 <p>As an example, let's imagine how the MNIST image dataset might be encoded probabilistically. $X$ would be the MNIST image (taking on a $\mathbb{R}^{28 \times 28}$ matrix), and $Z$ a categorical random variable which represents the number that is being shown (taking on a value in $\{0 \dots 9 \}$)</p>
 <p>The latent variable has a prior distribution $p(Z)$, and the observed data has a conditional distribution  $p(X | Z=z)$, both of which are prespecified in advance. The joint probability of any pair $X=x$ and $Z=z$ is then given as</p>
-<p>$$P(X=x, Z=z) = P(X=x|Z=z)P(Z=z)$$</p>
-<p>There are two main queries of interest in this graphical model.</p>
+$$P(X=x, Z=z) = P(X=x|Z=z)P(Z=z)$$<p>There are two main queries of interest in this graphical model.</p>
 <ol>
 <li>$P(X=x)$ (Learning)</li>
 <li>$P(Z=z|X=x)$ (Inference)</li>
 </ol>
 <h4 id="Learning">Learning<a class="anchor-link" href="#Learning">&#182;</a></h4><p>In <strong>learning</strong>, we are given a prior distribution on $z$ ($p(z)$) and a family of probability distributions $$\{ P_{\theta}(x|z) ~~~~\theta \in \Theta\}$$</p>
 <p>Our goal is to find the best distribution $P_{\theta}(x|z)$ to explain some observed data $X_1 \dots X_n$</p>
-<p>$$ \arg\max_{\theta} \log P_{\theta}(x_1 \dots x_n)$$</p>
-<p>If you work through the math, we find that this objective is equal to</p>
-<p>$$ \sum_{i=1}^n \log \mathbb{E}_{z \sim Z}[P_{\theta}(x_i| z)]$$</p>
-
+$$ \arg\max_{\theta} \log P_{\theta}(x_1 \dots x_n)$$<p>If you work through the math, we find that this objective is equal to</p>
+$$ \sum_{i=1}^n \log \mathbb{E}_{z \sim Z}[P_{\theta}(x_i| z)]$$
 </div>
 </div>
 </div>
@@ -61,20 +55,18 @@
  <div class='proof'>
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <!-- PROOF -->
 
-<p>$$
+$$
 \begin{align*}
 \log P_{\theta}(x_1 \dots x_n) &amp;= \sum_{i=1}^n \log P_{\theta}(x_i)\\
 &amp;= \sum_{i=1}^n \log \int P_{\theta}(x_i, z) dz \\
 &amp;= \sum_{i=1}^n \log \int P_{\theta}(x_i| z)p(z) dz \\
 &amp;= \sum_{i=1}^n \log \mathbb{E}_{z \sim Z}[P_{\theta}(x_i| z)]\\
 \end{align*}
-$$</p>
-
+$$
 </div>
 </div>
 </div>
@@ -85,8 +77,7 @@ $$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Although the above is fine for simple families of distributions $\Theta$, computing and optimizing the expectation quickly becomes challenging, since it involves computing an integral, which doesn't necessarily have a simple closed form. In particular, if we want to parametrize our distribution with a neural network, the integral is impossible.</p>
 
@@ -98,12 +89,10 @@ $$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Inference">Inference<a class="anchor-link" href="#Inference">&#182;</a></h4><p>In <strong>inference</strong>, we are given both the prior distribution $p(z)$ and the conditional distribution of the data $p(x|z)$. Given a certain $X=x$, our goal is to find the <em>posterior</em> distribution of $z$: our belief of what the latent variable $z$ was that generated the data $x$. This corresponds to finding</p>
-<p>$$P(Z=z|X=x) = \frac{P(X=x|Z=z)P(Z=z)}{P(X=x)} = \frac{P(X=x|Z=z)P(Z=z)}{\int P(X=x | Z=z') P(Z=z')dz'}$$</p>
-<p>Once again, except for the most simple distributions, computing the integral on the denominator is difficult and often intractable.</p>
+$$P(Z=z|X=x) = \frac{P(X=x|Z=z)P(Z=z)}{P(X=x)} = \frac{P(X=x|Z=z)P(Z=z)}{\int P(X=x | Z=z') P(Z=z')dz'}$$<p>Once again, except for the most simple distributions, computing the integral on the denominator is difficult and often intractable.</p>
 
 </div>
 </div>

@@ -2,8 +2,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This post will talk about the <strong>Kullback-Leibler Divergence</strong> from a holistic perspective of reinforcement learning and machine learning. You've probably run into KL divergences before: especially if you've played with deep generative models like VAEs. Put simply, the KL divergence between two probability distributions measures how different the two distributions are.</p>
 <p>I'll introduce the definition of the KL divergence and various interpretations of the KL divergence. Most importantly, I'll argue the following fact:</p>
@@ -18,8 +17,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="What's-the-KL-Divergence?">What's the KL Divergence?<a class="anchor-link" href="#What's-the-KL-Divergence?">&#182;</a></h2>
 </div>
@@ -30,13 +28,11 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <em>Kullback-Leibler divergence</em> (hereafter written as KL divergence) is a measure of how a probability distribution differs from another probability distribution. Classically, in Bayesian theory, there is some <em>true distribution</em> $P(X)$; we'd like to estimate with an <em>approximate distribution</em> $Q(X)$. In this context, the KL divergence measures the distance from the approximate distribution $Q$ to the true distribution $P$.</p>
 <p>Mathematically, consider two probability distributions $P,Q$ on some space $\mathcal{X}$. The Kullback-Leibler divergence from $Q$ to $P$ (written as $D_{KL}(P \| Q)$)</p>
-<p>$$D_{KL}(P \| Q) = \mathbb{E}_{x \sim P}\left[\log \frac{P(X)}{Q(X)}\right]$$</p>
-
+$$D_{KL}(P \| Q) = \mathbb{E}_{x \sim P}\left[\log \frac{P(X)}{Q(X)}\right]$$
 </div>
 </div>
 </div>
@@ -45,8 +41,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Properties-of-KL-Divergence">Properties of KL Divergence<a class="anchor-link" href="#Properties-of-KL-Divergence">&#182;</a></h3><p>There are some immediate notes that are worth pointing out about this definition.</p>
 <p>The KL Divergence is <strong>not symmetric</strong>: that is $D_{KL}(P \| Q) \neq D_{KL}(Q \| P)$. As a result, it is also <strong>not a distance metric</strong>.</p>
@@ -61,12 +56,10 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Rewriting-the-Objective">Rewriting the Objective<a class="anchor-link" href="#Rewriting-the-Objective">&#182;</a></h3><p>With some algebra, we can manipulate the definition of KL divergence in terms of other quantities. The most useful such manipulation is:</p>
-<p>$$D_{KL}(P \| Q) = \mathbb{E}_{x \sim P}[-\log Q(X)] - \mathcal{H}(P(X))$$</p>
-<p>Here, $\mathbb{E}_{x \sim P}[-\log Q(X)]$ is the <em>cross entropy</em> between $P$ and $Q$ (and denoted $H(p,q)$). The second term $\mathcal{H}(P(X))=\mathbb{E}_{x \sim p}[-\log p(x)]$ is the <em>entropy</em> of $P$.</p>
+$$D_{KL}(P \| Q) = \mathbb{E}_{x \sim P}[-\log Q(X)] - \mathcal{H}(P(X))$$<p>Here, $\mathbb{E}_{x \sim P}[-\log Q(X)]$ is the <em>cross entropy</em> between $P$ and $Q$ (and denoted $H(p,q)$). The second term $\mathcal{H}(P(X))=\mathbb{E}_{x \sim p}[-\log p(x)]$ is the <em>entropy</em> of $P$.</p>
 
 </div>
 </div>
@@ -76,8 +69,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Forward-and-Reverse-KL">Forward and Reverse KL<a class="anchor-link" href="#Forward-and-Reverse-KL">&#182;</a></h2>
 </div>
@@ -88,8 +80,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's place ourselves in the optimization setting. There is some true distribution $P(X)$ that we're trying to estimate with our approximate distribution $Q_\theta(X)$. I'm using $\theta$ as a parameter here to explicitly emphasize that $Q$ is the distribution that we get to control.</p>
 <p>As we mentioned earlier, the KL divergence is not a symmetric measure (i.e. that $D_{KL}(P \| Q) \neq D_{KL}(Q \| P)$). As a result, when trying to approximate $P$, we have a choice between two potential objectives to optimize.</p>
@@ -108,8 +99,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Forward-KL:-Mean-Seeking-Behaviour">Forward KL: Mean-Seeking Behaviour<a class="anchor-link" href="#Forward-KL:-Mean-Seeking-Behaviour">&#182;</a></h3>
 </div>
@@ -120,16 +110,14 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's consider optimizing the forward KL objective with respect to $Q_{\theta}$</p>
-<p>\begin{align*}
+\begin{align*}
 \arg\min_{\theta}D_{KL}(P \| Q) &amp;= \arg\min_{\theta} \mathbb{E}_{x \sim P}[-\log Q_\theta(X)] - \mathcal{H}(P(X))\\
 &amp;= \arg\min_{\theta} \mathbb{E}_{x \sim P}[-\log Q_\theta(X)]\\
 &amp;= \arg\max_{\theta} \mathbb{E}_{x \sim P}[\log Q_\theta(X)]
-\end{align*}</p>
-<p>Notice that this is identical to the maximum likelihood estimation objective. Translated into words, the objective above will sample points from $P(X)$ and try to maximize the probability of these points under $Q(X)$. A good approximation under the forward KL objective thus satisfies</p>
+\end{align*}<p>Notice that this is identical to the maximum likelihood estimation objective. Translated into words, the objective above will sample points from $P(X)$ and try to maximize the probability of these points under $Q(X)$. A good approximation under the forward KL objective thus satisfies</p>
 <blockquote><p>Wherever $P(\cdot)$ has high probability, $Q(\cdot)$ must also have high probability.</p>
 </blockquote>
 <p>We consider this <em>mean-seeking</em> behaviour, because the approximate distribution $Q$ must cover all the modes and regions of high probability in $P$. The optimal "approximate" distribution for our example is shown below. Notice that the approximate distribution centers itself between the two modes, so that it can have high coverage of both. The forward KL divergence does not penalize $Q$ for having high probability mass where $P$ does not.</p>
@@ -143,8 +131,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Reverse-KL:-Mode-Seeking-Behaviour">Reverse KL: Mode-Seeking Behaviour<a class="anchor-link" href="#Reverse-KL:-Mode-Seeking-Behaviour">&#182;</a></h3>
 </div>
@@ -155,15 +142,13 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now consider optimizing the reverse KL objective with respect to $Q_{\theta}$</p>
-<p>\begin{align*}
+\begin{align*}
 \arg\min_{\theta}D_{KL}(Q \| P) &amp;= \arg\min_{\theta} \mathbb{E}_{x \sim Q_\theta}[-\log P(X)] - \mathcal{H}(Q_\theta(X))\\
 &amp;= \arg\max_{\theta} \mathbb{E}_{x \sim Q_\theta}[\log P(X)] + \mathcal{H}(Q_{\theta}(X))
-\end{align*}</p>
-<p>Let's translate the objective above into words. The objective above will sample points from $Q(X)$ and try to maximize the probability of these points under $P(X)$. The entropy term encourages the approximate distribution to be as wide as possible. A good approximation under the reverse KL objective thus satisfies</p>
+\end{align*}<p>Let's translate the objective above into words. The objective above will sample points from $Q(X)$ and try to maximize the probability of these points under $P(X)$. The entropy term encourages the approximate distribution to be as wide as possible. A good approximation under the reverse KL objective thus satisfies</p>
 <blockquote><p>Wherever $Q(\cdot)$ has high probability, $P(\cdot)$ must also have high probability.</p>
 </blockquote>
 <p>We consider this <em>mode-seeking</em> behaviour, because any sample from the approximate distribution $Q$ must lie within a mode of $P$ (since it's required that samples from $Q$ have high probability under $P$). Notice that unlike the forward KL objective, there's nothing requiring the approximate distribution to try to cover all the modes. The entropy term prevents the approximate distribution from collapsing to a very narrow mode; typically, behaviour when optimizing this objective is to find a mode of $P$ with high probability and wide support, and mimic it exactly.</p>
@@ -178,16 +163,13 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Which-one-should-I-use?">Which one should I use?<a class="anchor-link" href="#Which-one-should-I-use?">&#182;</a></h3><p>In this toy example, because we knew the exact distribution of $P$, we were able to show the behaviour of minimizing the forward and reverse KL divergences. In practice, it's often not possible to do both, and you are limited by domain to only one.</p>
 <h4 id="Forward-KL">Forward KL<a class="anchor-link" href="#Forward-KL">&#182;</a></h4><p>Recall that the simplified objective for the forward KL objective was</p>
-<p>$$\arg\max_{\theta} \mathbb{E}_{x \sim P}[\log Q_\theta(X)]$$</p>
-<p>To be able to evaluate this objective, we need either a dataset of samples from the true model $P(X)$, or a mechanism for sampling from the true model.</p>
+$$\arg\max_{\theta} \mathbb{E}_{x \sim P}[\log Q_\theta(X)]$$<p>To be able to evaluate this objective, we need either a dataset of samples from the true model $P(X)$, or a mechanism for sampling from the true model.</p>
 <h4 id="Reverse-KL">Reverse KL<a class="anchor-link" href="#Reverse-KL">&#182;</a></h4><p>The simplified objective for the forward KL objective was</p>
-<p>$$\arg\max_{\theta} \mathbb{E}_{x \sim Q_\theta}[\log P(X)] + \mathcal{H}(Q_{\theta}(X))$$</p>
-<p>To be able to evaluate this objective, we need to be able to evaluate probabilities of data-points under the true model $P(X)$</p>
+$$\arg\max_{\theta} \mathbb{E}_{x \sim Q_\theta}[\log P(X)] + \mathcal{H}(Q_{\theta}(X))$$<p>To be able to evaluate this objective, we need to be able to evaluate probabilities of data-points under the true model $P(X)$</p>
 
 </div>
 </div>
@@ -197,8 +179,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Supervised-Learning-=-Forward-KL">Supervised Learning = Forward KL<a class="anchor-link" href="#Supervised-Learning-=-Forward-KL">&#182;</a></h2>
 </div>
@@ -209,19 +190,17 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Recall in supervised learning (empirical risk minimization), we have a dataset of samples $\mathcal{D} = \{(x_i,y_i)\}$ from some ground-truth data distribution $P(x,y) = P(x)P(y|x)$.</p>
 <p>Our goal in supervised learning is to learn a model $f: \mathcal{X} \to \mathcal{Y}$ that minimizes the empirical risk of the model, which is parametrized by a loss function $L(f(x),y)$. In particular, we optimize over some distribution of models $f_\theta$</p>
-<p>$$\arg\min_{\theta} \mathbb{E}_{(x,y) \sim \mathcal{D}}[L(f_\theta(x),y)]$$</p>
-<p>We'll show that optimizing this objective is equivalent to minimizing the divergence from an approximate distribution $q_\theta(y|x)$ to the true data distribution $p(y|x)$. For reference, the forward KL divergence objective is 
+$$\arg\min_{\theta} \mathbb{E}_{(x,y) \sim \mathcal{D}}[L(f_\theta(x),y)]$$<p>We'll show that optimizing this objective is equivalent to minimizing the divergence from an approximate distribution $q_\theta(y|x)$ to the true data distribution $p(y|x)$. For reference, the forward KL divergence objective is 
 $$\arg\min_{\theta} \mathbb{E}_{x,y \sim \mathcal{D}}[-\log Q_\theta(y|x)]$$</p>
 <ul>
 <li><strong>Classification with Cross-Entropy Loss</strong>: Here, our approximate distribution $q_{\theta}(y|x)$ is a discrete distribution parametrized by a probability vector $p$ which is outputted by a neural network $f_{\theta}(x)$. By definition, the cross-entropy loss is exactly what the KL divergence minimizes.</li>
 <li><strong>Regression with Mean-Squared Error Loss</strong>: Here, our approximate distribution $q_{\theta}(y|x)$ is distributed normally $\mathcal{N}(f_{\theta}(x), I)$, where the mean of the distribution is parametrized by a neural network. The negative log-likelihood of the normal distribution is written below. Minimizing the NLL of this normal distribution is clearly equivalent to the mean-squared error loss.</li>
 </ul>
-<p>$$-\log q(y|x) = -\frac{1}{2}\|y - f_{\theta}(x)\|_2^2 + C$$</p>
+$$-\log q(y|x) = -\frac{1}{2}\|y - f_{\theta}(x)\|_2^2 + C$$<p></p>
 <p>This concept can in fact be extended to many other losses (for example, absolute error corresponds to the Laplace distribution). In particular, the forward KL divergence loss corresponds exactly to the problem of <em>maximum-likelihood estimation</em> which is the primary basis for many supervised learning problems.</p>
 
 </div>
@@ -232,8 +211,7 @@ $$\arg\min_{\theta} \mathbb{E}_{x,y \sim \mathcal{D}}[-\log Q_\theta(y|x)]$$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Reinforcement-Learning-=-Reverse-KL">Reinforcement Learning = Reverse KL<a class="anchor-link" href="#Reinforcement-Learning-=-Reverse-KL">&#182;</a></h2>
 </div>
@@ -244,19 +222,16 @@ $$\arg\min_{\theta} \mathbb{E}_{x,y \sim \mathcal{D}}[-\log Q_\theta(y|x)]$$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Viewing the problem of reinforcement learning as minimizing the reverse KL objective requires us to think about reinforcement learning from a probabilistic perspective. For a good intro on why we want to do that, and how exactly we formulate it, check out my <a href="rl/controlasinference.html">control as inference guide</a>.</p>
 <p>We can imagine that there's a distribution of optimal trajectories, given by $P_{opt}(\tau)$. Our goal in reinforcement learning is to learn stochastic policies $\pi(a|s)$ that induce a distribution over trajectories: $q_{\pi}(\tau)$. Now, we can't sample directly from the distribution of optimal trajectories $P_{opt}(\tau)$, but we know that the probability of a trajectory under optimality is exponential in the sum of rewards received on the trajectory.</p>
-<p>$$\log P(\tau) = \sum_{t=1}^T r(s_t,a_t)$$</p>
-<p>Optimizing the reverse KL objective then is</p>
-<p>\begin{align*}
+$$\log P(\tau) = \sum_{t=1}^T r(s_t,a_t)$$<p>Optimizing the reverse KL objective then is</p>
+\begin{align*}
 &amp;~\arg\max_{\pi} \mathbb{E}_{\tau \sim Q_\pi}[\log P(\tau)] + \mathcal{H}(Q_{\\pi}(\tau))\\
 &amp;=\arg\max_{\pi}\mathbb{E}_{\tau \sim Q_\pi}[\sum_{t=1}^T r(s_t,a_t)] + \mathbb{E}_{\tau \sim Q_\pi}[\sum_{t=1}^T -\log \pi(a_t|s_t)]\\
 &amp;=\arg\max_{\pi}\mathbb{E}_{\tau \sim Q_\pi}\left[\sum_{t=1}^T \left(r(s_t,a_t) -\log\pi(a_t|s_t)\right)\right]\\
-\end{align*}</p>
-<p>This is exactly the maximum-entropy reinforcement learning objective!</p>
+\end{align*}<p>This is exactly the maximum-entropy reinforcement learning objective!</p>
 
 </div>
 </div>
@@ -266,8 +241,7 @@ $$\arg\min_{\theta} \mathbb{E}_{x,y \sim \mathcal{D}}[-\log Q_\theta(y|x)]$$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><p>KL divergences show up everywhere in machine learning, and a solid foundation in what the KL divergence measures is very useful. If you're interested in learning more about applications of KL divergence in statistics, I'd recommend reading articles on bayesian inference. KL divergence also has a very rich history in information theory: the <a href="http://colah.github.io/posts/2015-09-Visual-Information/">following</a> are <a href="https://www.wiley.com/en-us/Elements+of+Information+Theory%2C+2nd+Edition-p-9780471241959">great</a> <a href="http://www.inference.org.uk/itprnn/book.html">reads</a>. If you love deep learning, two very important concepts in the field using KL divergences right now are <a href="https://arxiv.org/abs/1312.6114">VAEs</a> and <a href="https://arxiv.org/abs/1503.02406">information bottlenecks</a>.</p>
 <p>As always, if you catch an error, shoot me an email at <code>dibya</code> @ <code>berkeley.edu</code> or comment below.</p>

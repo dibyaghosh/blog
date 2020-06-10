@@ -2,8 +2,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A <a href="https://arxiv.org/abs/1805.11686">recent paper of mine</a> proposed an algorithm to do weakly-supervised inverse RL from goal states (check out the paper!). The algorithm is derived through an interesting framework called "control as inference", which analogizes (max-ent) reinforcement learning as inference in a graphical model. This framework has been gaining traction recently, and it's been used to justify many recent contributions in IRL (<a href="https://arxiv.org/abs/1603.00448">Finn et al</a>, <a href="https://arxiv.org/abs/1710.11248">Fu et al</a>), and some interesting RL algorithms like Soft Q-Learning(<a href="https://arxiv.org/abs/1702.08165">Haarnoja et al</a>).</p>
 <p>I personally think the framework is very cute, and it's an interesting paradigm which can explain some weird quirks that show up in RL. This document is a writeup which explains exactly what "control as inference" is. Once you've finished reading this, you may also enjoy <a href="http://rail.eecs.berkeley.edu/deeprlcourse-fa17/f17docs/lecture_11_control_and_inference.pdf">this lecture</a> in Sergey Levine's CS294-112 class, or his <a href="https://arxiv.org/abs/1805.00909">primer on control as inference</a> as a more detailed reference.</p>
@@ -16,8 +15,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="The-MDP">The MDP<a class="anchor-link" href="#The-MDP">&#182;</a></h3><p>In this article, we'll focus on a finite-horizon MDP with horizon $T$ : this is simply for convenience, and all the derivations and proofs can be extended to the infinite horizon case simply. Recall that an MDP is $(\mathcal{S}, \mathcal{A}, \mathcal{T}, \rho, R)$ , where $\mathcal{S,A}$ are the state and action spaces, $T(\cdot \vert s,a)$ is the transition kernel, $\rho$ the initial state distribution, and $R$ the reward.</p>
 
@@ -29,8 +27,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="The-Graphical-Model">The Graphical Model<a class="anchor-link" href="#The-Graphical-Model">&#182;</a></h2><p>Trajectories in an MDP as detailed above can be modelled by the following graphical model.</p>
 <p><img src="/blog/assets/posts/controlasinference/state_action.png" alt="State Action"></p>
@@ -38,13 +35,11 @@
 <p>We'll define the distributions of the variables in this graphical model in a way such that the probability of a trajectory $\tau = (s_0, a_0, s_1, a_1, \dots s_T)$ is equal to the probability of the trajectory under the MDP's dynamics.</p>
 <p>We set the distribution of $S_0$  to be $\rho(s)$ (the initial state distribution of the MDP).</p>
 <p>For subsequent $S_{t}$, the distribution is defined using transition probabilities of the MDP.</p>
-<p>$$P(S_{t+1} = s' \vert S_{t}=s, A_t = a) = T(s' \vert a,s)$$</p>
+$$P(S_{t+1} = s' \vert S_{t}=s, A_t = a) = T(s' \vert a,s)$$<p></p>
 <p>The distribution for the action variables $A_t$ is uniform on the action space.</p>
-<p>$$P(A_t = a) = C$$</p>
-<p>It may seem odd that the actions are sampled uniformly, but don't worry! These are only <em>prior</em> probabilities, and we'll get interesting action distributions once we start conditioning (Hang tight!)</p>
+$$P(A_t = a) = C$$<p>It may seem odd that the actions are sampled uniformly, but don't worry! These are only <em>prior</em> probabilities, and we'll get interesting action distributions once we start conditioning (Hang tight!)</p>
 <p>The probability of a trajectory $\tau = (s_0, a_0, s_1, a_1 , \dots s_T,a_T)$ in this model factorizes as</p>
-<p>$$\begin{align*}P(\tau) &amp;= P(S_0 = s_0) \prod_{t=0}^{T-1} P(A_t = a_t)P(S_{t+1} = s_{t+1} | S_t = s_t, A_t = a_t)\\ &amp;= C^T \left(\rho(s_0) \prod_{t=0}^{T-1} T(s_{t+1} \vert s_t, a_t)\right)\\  &amp;\propto \left(\rho(s_0)\prod_{t=0}^{T-1} T(s_{t+1} | s_t,a_t)\right) \end{align*}$$</p>
-<p>The probability of a trajectory in our graphical model is thus directly proportional to the probability under the system dynamics.</p>
+$$\begin{align*}P(\tau) &amp;= P(S_0 = s_0) \prod_{t=0}^{T-1} P(A_t = a_t)P(S_{t+1} = s_{t+1} | S_t = s_t, A_t = a_t)\\ &amp;= C^T \left(\rho(s_0) \prod_{t=0}^{T-1} T(s_{t+1} \vert s_t, a_t)\right)\\  &amp;\propto \left(\rho(s_0)\prod_{t=0}^{T-1} T(s_{t+1} | s_t,a_t)\right) \end{align*}$$<p>The probability of a trajectory in our graphical model is thus directly proportional to the probability under the system dynamics.</p>
 <p>In the special case that dynamics are deterministic, then $P(\tau) \propto \mathbb{1} \{\text{Feasible}\}$ (that is, all trajectories are equally likely).</p>
 
 </div>
@@ -55,8 +50,7 @@
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Adding-Rewards">Adding Rewards<a class="anchor-link" href="#Adding-Rewards">&#182;</a></h3><p>So far, we have a general structure for describing the likelihood of trajectories in an MDP, but it's highly uninteresting since at the moment, all trajectories are equally likely. To highlight interesting trajectories, we'll introduce the concept of <em>optimality</em>.</p>
 <p>We'll say that an agent is <strong>optimal</strong> at timestep $t$ with some probability which depends on the current state and action : $P(\text{Optimal at } t) = f(s_t,a_t)$. We'll embed optimality into our graphical model with a binary random variable at every timestep $e_t$, where $P(e_t = 1 \vert S_t=s_t, A_t=a_t) = f(s_t,a_t)$.</p>
@@ -64,8 +58,7 @@
 <p>The final graphical model, presented below, ends up looking much like one for a Hidden Markov Model.</p>
 <p><img src="/blog/assets/posts/controlasinference/state_action_reward.png" alt="State Action Optimality"></p>
 <p>For a trajectory $\tau$, the probability that it is optimal at all timesteps is proportional (exponentially) to the total reward received in the trajectory.</p>
-<p>$$P(\text{All } e_t=1 | \tau)  =\exp (\sum_{t=0}^T r(s_t,a_t))$$</p>
-
+$$P(\text{All } e_t=1 | \tau)  =\exp (\sum_{t=0}^T r(s_t,a_t))$$
 </div>
 </div>
 </div>
@@ -77,8 +70,7 @@
  <div class='proof'>
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- PROOF -->
 $$\begin{align*}P(\text{All } e_t=1 | \tau) &amp;= \prod_{t=0}^T P(e_t = 1 \vert S_t=s_t, A_t=a_t) \\ &amp;= \prod_{t=0}^T f(s_t,a_t) \\ &amp;= \prod_{t=0}^T \exp{r(s_t,a_t)} \\ &amp;=  \exp (\sum_{t=0}^T r(s_t,a_t))\end{align*}$$</p>
@@ -93,14 +85,12 @@ $$\begin{align*}P(\text{All } e_t=1 | \tau) &amp;= \prod_{t=0}^T P(e_t = 1 \vert
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We'll describe the <strong>optimal trajectory distribution</strong> as the distribution when conditioned on being optimal at all time steps.
 $$\pi_{\text{optimal}}(\tau) = P(\tau \vert \text{All } e_t =1) = P(\tau~\vert~e_{1:T} = 1)$$</p>
 <p>Explicitly writing out this distribution, we have that</p>
-<p>$$P(\tau ~\vert ~e_{1:T} = 1) \propto \exp(\sum_{t=0}^T r(s_t,a_t))P(\tau)$$</p>
-
+$$P(\tau ~\vert ~e_{1:T} = 1) \propto \exp(\sum_{t=0}^T r(s_t,a_t))P(\tau)$$
 </div>
 </div>
 </div>
@@ -112,8 +102,7 @@ $$\pi_{\text{optimal}}(\tau) = P(\tau \vert \text{All } e_t =1) = P(\tau~\vert~e
  <div class='proof'>
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- PROOF -->
 $$\begin{align*}P(\tau ~\vert~ e_{1:T} =1) &amp;= \frac{P(e_{1:T} =1 \vert \tau)P(\tau)}{P(e_{1:T} =1)} \\ &amp;\propto P(e_{1:T} =1 \vert \tau)P(\tau) \\ &amp;\propto \exp(\sum_{t=0}^T r(s_t,a_t))P(\tau)\end{align*}$$</p>
@@ -128,8 +117,7 @@ $$\begin{align*}P(\tau ~\vert~ e_{1:T} =1) &amp;= \frac{P(e_{1:T} =1 \vert \tau)
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Under deterministic dynamics, since $P(\tau) \propto \mathbb{1}\{\text{Feasible}\}$, the probability of any feasible trajectory is $$P(\tau~\vert~ e_{1:T} =1) \propto \exp(\sum_{t=0}^T r(s_t,a_t))$$</p>
 <p>This can be viewed as a special form of an energy-based model, where the energy of a trajectory is proportional to the reward.</p>
@@ -142,15 +130,13 @@ $$\begin{align*}P(\tau ~\vert~ e_{1:T} =1) &amp;= \frac{P(e_{1:T} =1 \vert \tau)
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Exact-Inference-in-the-Graphical-Model">Exact Inference in the Graphical Model<a class="anchor-link" href="#Exact-Inference-in-the-Graphical-Model">&#182;</a></h2><p>We now have a model for what the optimal trajectory distribution is, so the next appropriate step is to look at optimal action distributions. If I am at state $s$ on timestep $t$, what is the "optimal" distribution of actions?</p>
 <p>Pedantically, this corresponds to finding 
 $$\pi_{t}(a \vert s) = P(A_t = a~\vert~S_t = s,e_{1:T} =1)$$</p>
 <p>In our graphical model, $A_t$ is independent of all events before $t$ ($A_t \perp E_1 \dots E_{t-1})$. We can verify this mathematically, but the intuition is that  the distribution of actions at a timestep shouldn't be impacted by what happened previously (the environment is Markovian). So,</p>
-<p>$$\pi_{t}(a \vert s) = P(A_t = a \vert S_t = s, e_{t:T} =1)$$</p>
-<p>Solving for these probabilities corresponds to doing <em>exact inference</em> in the graphical model above, which looks much like the <a href="https://en.wikipedia.org/wiki/Forward–backward_algorithm">forward-backward algorithm</a> for HMMs. The procedure goes as follows:</p>
+$$\pi_{t}(a \vert s) = P(A_t = a \vert S_t = s, e_{t:T} =1)$$<p>Solving for these probabilities corresponds to doing <em>exact inference</em> in the graphical model above, which looks much like the <a href="https://en.wikipedia.org/wiki/Forward–backward_algorithm">forward-backward algorithm</a> for HMMs. The procedure goes as follows:</p>
 <ol>
 <li><em>Backward message passing</em>: Compute probabilities $P(e_{t:T} = 1 ~\vert~ S_t =s)$ and $P(e_{t:T} = 1 ~\vert~ S_t =s, A_{t} = a)$</li>
 <li><em>Forward message passing</em>: Compute probabilities $P(A_t = a \vert S_t = s, e_{t:T} =1)$ using Bayes Rule and the backwards messages.</li>
@@ -164,8 +150,7 @@ $$\pi_{t}(a \vert s) = P(A_t = a~\vert~S_t = s,e_{1:T} =1)$$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Backward-Messages">Backward Messages<a class="anchor-link" href="#Backward-Messages">&#182;</a></h3><p>We can compute these backward messages recursively, since</p>
 <ol>
@@ -173,8 +158,7 @@ $$\pi_{t}(a \vert s) = P(A_t = a~\vert~S_t = s,e_{1:T} =1)$$</p>
 <li>$P(e_{t:T} = 1\vert S_t=s)$ can be expressed in terms of $P(e_{t:T} = 1\vert S_t=s, A_t =a)$</li>
 </ol>
 <p>Working through the math (see the proof for more details)</p>
-<p>$$P(e_{t:T} = 1 = e^{r(s,a)} \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[P(e_{t+1:T}=1 \vert S_{t+1}=s')]$$
-<br />
+$$P(e_{t:T} = 1 = e^{r(s,a)} \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[P(e_{t+1:T}=1 \vert S_{t+1}=s')]$$<p><br />
 $$P(e_{t:T} = 1\vert S_t=s) = \mathbb{E}_{a}[P(e_{t:T} = 1 \vert A_t=a, S_t =s)]$$</p>
 
 </div>
@@ -188,8 +172,7 @@ $$P(e_{t:T} = 1\vert S_t=s) = \mathbb{E}_{a}[P(e_{t:T} = 1 \vert A_t=a, S_t =s)]
  <div class='proof'>
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- PROOF -->
 $$
@@ -214,21 +197,16 @@ $$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>That looks pretty ugly and uninterpretable, but if we view the expressions in log-probability space, there's rich meaning.</p>
 <p>Let's define 
 $$Q_t(s,a) = \log P(e_{t:T} = 1\vert A_t =a, S_t=s)$$
 $$V_t(s) = \log P(e_{t:T} = 1 \vert S_t=s)$$</p>
 <p>$Q$ and $V$ are very suggestively named for a good reason: we'll discover that they are the analogue of the $Q$ and $V$ functions in standard RL. Rewriting the above expressions with $Q_t(\cdot, \cdot)$ and $V_t(\cdot)$:</p>
-<p>$$Q_t(s,a)  = r(s,a) + \log  \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[e^{V_{t+1}(s')}]$$</p>
-<p>$$V_t(s) = \log \mathbb{E}_a [e^{Q_t(s,a)}]$$</p>
-<p>Remember that the function $\log \mathbb{E}[\exp(f(X))] $ acts as a "soft" maximum operation: that is $$\log \mathbb{E}[\exp(f(X))] = \text{soft} \max_X f(X) \approx \max_{X} f(X)$$</p>
+$$Q_t(s,a)  = r(s,a) + \log  \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[e^{V_{t+1}(s')}]$$$$V_t(s) = \log \mathbb{E}_a [e^{Q_t(s,a)}]$$<p>Remember that the function $\log \mathbb{E}[\exp(f(X))] $ acts as a "soft" maximum operation: that is $$\log \mathbb{E}[\exp(f(X))] = \text{soft} \max_X f(X) \approx \max_{X} f(X)$$</p>
 <p>We'll denote it as $\text{soft} \max$ from now on - but don't get it confused with the actual softmax operator. With this notation:</p>
-<p>$$Q_t(s,a) = r(s,a) + \text{soft} \max_{s'} V_{t+1}(s')$$</p>
-<p>$$V_t(s) = \text{soft} \max_{a} Q_{t}(s,a)$$</p>
-<p>These recursive equations look very much like the Bellman backup equations!</p>
+$$Q_t(s,a) = r(s,a) + \text{soft} \max_{s'} V_{t+1}(s')$$$$V_t(s) = \text{soft} \max_{a} Q_{t}(s,a)$$<p>These recursive equations look very much like the Bellman backup equations!</p>
 <p>These are the <strong>soft Bellman backup equations</strong>. They differ from the traditional Bellman backup in two ways:</p>
 <ol>
 <li>The value function is a "soft" maximum over actions, not a hard maximum.</li>
@@ -244,19 +222,17 @@ $$V_t(s) = \log P(e_{t:T} = 1 \vert S_t=s)$$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Forward-Messages">Forward Messages<a class="anchor-link" href="#Forward-Messages">&#182;</a></h3><p>Now that we know that the $Q$ and $V$ functions correspond to backward messages, let's now compute the optimal action distribution.</p>
-<p>$$
+$$
 \begin{align*}
 P(A_t =a \vert S_t=s, e_{t:T}=1) &amp;= \frac{P(e_{t:T}=1 \vert A_t =a,  S_t=s)P(A_t = a \vert S_t =s)}{P(e_{t:T}=1\vert S_t=s)}\\
 &amp;= \frac{e^{Q_t(s,a)}C}{e^{V_t(s)}}\\
 &amp;\propto \exp(Q_t(s,a) - V_t(s))\\
 &amp;\propto \exp(A_t(s,a))
 \end{align*}
-$$</p>
-<p>If we define the <em>advantage</em> $A_t(s,a) = Q_t(s,a) - V_t(s)$, then we find that the optimal probability of picking an action is simply proportional to the exponentiated advantage!</p>
+$$<p>If we define the <em>advantage</em> $A_t(s,a) = Q_t(s,a) - V_t(s)$, then we find that the optimal probability of picking an action is simply proportional to the exponentiated advantage!</p>
 <p><a href="https://arxiv.org/abs/1702.08165">Haarnoja et al</a> perform a derivation similar to this to find an algorithm called Soft Q-Learning. In their paper, they show that the soft bellman backup update is a contraction, and so Q-learning with the soft backup equations have the same convergence guarantees that Q-learning has in the discrete case. Empirically, they show that this algorithm can learn complicated continuous control tasks with high sample efficiency. In follow-up works, they deploy the algorithms <a href="https://arxiv.org/abs/1803.06773">on robots</a> and also present  <a href="https://arxiv.org/abs/1801.01290">actor-critic methods</a>  in this framework.</p>
 
 </div>
@@ -267,17 +243,14 @@ $$</p>
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Approximate-Inference-with-variational-methods">Approximate Inference with variational methods<a class="anchor-link" href="#Approximate-Inference-with-variational-methods">&#182;</a></h2><p>Let's try to look at inference in this graphical model in a different way. Instead of doing exact inference in the original model to get a policy distribution, we can attempt to learn a <em>variational</em> approximation to our intended distribution $q_{\theta}(\tau) \approx P(\tau \vert e_{1:T}=1)$.</p>
 <p>The motivation is the following: we want to learn a policy $\pi(a \vert s)$ such that sampling actions from $\pi$ causes the trajectory distribution to look as close to $P(\tau \vert e_{1:T} = 1)$ as possible. We'll define a variational distribution $q_{\theta}(\tau)$ as follows:</p>
-<p>$$q_\theta(\tau) = P(S_0 = s_0) \prod_{t=0}^T q_{\theta}(a_t \vert s_t) P(S_{t+1} = s_{t+1} \vert S_{t} = s_t, A_t = a_t) = \left(\prod_{t=0}^T q(a_t | s_t)\right) P(\tau)$$</p>
-<p>This variational distribution can change the distribution of actions, but fixes the system dynamics in place. This is a form of structured variational inference, and we attempt to find the function $q_{\theta}(a \vert s)$ which minimizes the KL divergence with our target distribution.</p>
-<p>$$\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1))$$</p>
+$$q_\theta(\tau) = P(S_0 = s_0) \prod_{t=0}^T q_{\theta}(a_t \vert s_t) P(S_{t+1} = s_{t+1} \vert S_{t} = s_t, A_t = a_t) = \left(\prod_{t=0}^T q(a_t | s_t)\right) P(\tau)$$<p>This variational distribution can change the distribution of actions, but fixes the system dynamics in place. This is a form of structured variational inference, and we attempt to find the function $q_{\theta}(a \vert s)$ which minimizes the KL divergence with our target distribution.</p>
+$$\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1))$$<p></p>
 <p>If we simplify the expressions, it turns out that</p>
-<p>$$\arg\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) = \arg \max_{\theta} \mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) + \mathcal{H}(q_{\theta}(\cdot \vert s_t)]$$</p>
-
+$$\arg\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) = \arg \max_{\theta} \mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) + \mathcal{H}(q_{\theta}(\cdot \vert s_t)]$$
 </div>
 </div>
 </div>
@@ -289,8 +262,7 @@ $$</p>
  <div class='proof'>
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- PROOF -->
 Remember from the first section that $P(\tau \vert \text{All } e_t=1) = P(\tau) \exp(\sum_{t=0}^T r(s_t,a_t))$
@@ -304,8 +276,7 @@ D_{KL}(q_{\theta}(\tau) \| P(\tau \vert \text{All } e_t = 1)) &amp;= -\mathbb{E}
 \end{align*}
 $$
 Recalling that $-\log q(a_t | s_t)$ is a point estimate of the entropy of $q_{\theta}$: $\mathcal{H}(q(\cdot \vert s))$, we get our result.</p>
-<p>$$D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) = -\mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) + \mathcal{H}(q_{\theta}(\cdot \vert s_t)]$$</p>
-
+$$D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) = -\mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) + \mathcal{H}(q_{\theta}(\cdot \vert s_t)]$$
 </div>
 </div>
 </div>
@@ -316,8 +287,7 @@ Recalling that $-\log q(a_t | s_t)$ is a point estimate of the entropy of $q_{\t
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The best policy $q_{\theta}(a|s)$ is thus the one that maximizes expected reward with an entropy bonus. This is the the objective for <strong>maximum entropy reinforcement learning.</strong> Performing structured variational inference with this particular family of distributions to minimize the KL divergence with the optimal trajectory distribution is equivalent to doing reinforcement learning in the max-ent setting!</p>
 
@@ -329,8 +299,7 @@ Recalling that $-\log q(a_t | s_t)$ is a point estimate of the entropy of $q_{\t
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Inferring-Reward-with-Maximum-Entropy-Inverse-Reinforcement-Learning">Inferring Reward with Maximum Entropy Inverse Reinforcement Learning<a class="anchor-link" href="#Inferring-Reward-with-Maximum-Entropy-Inverse-Reinforcement-Learning">&#182;</a></h2>
 </div>
@@ -341,8 +310,7 @@ Recalling that $-\log q(a_t | s_t)$ is a point estimate of the entropy of $q_{\t
 
  
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="To-Be-Continued">To Be Continued<a class="anchor-link" href="#To-Be-Continued">&#182;</a></h3><p>This tutorial is a work in progress. Stay tuned for more updates!</p>
 
