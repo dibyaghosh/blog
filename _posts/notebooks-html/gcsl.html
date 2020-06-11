@@ -6,7 +6,7 @@
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Goal-Conditioned-Supervised-Learning-(GCSL)">Goal-Conditioned Supervised Learning (GCSL)<a class="anchor-link" href="#Goal-Conditioned-Supervised-Learning-(GCSL)">&#182;</a></h1><p><a href="https://ibb.co/gz3HWFD"><img src="https://i.ibb.co/J5K0pFz/gcsl-figure-arxiv.png" alt="gcsl-figure-arxiv" border="0" /></a></p>
 <p>This notebook provides a brief introduction to goal-conditioned supervised learning (GCSL), as introduced in</p>
-<blockquote><p>Dibya Ghosh, Abhishek Gupta, Justin Fu, Ashwin Reddy, Coline Devin, Benjamin Eysenbach, Sergey Levine. <em>Learning To Reach Goals Without Reinforcement Learning.</em></p>
+<blockquote><p>Dibya Ghosh, Abhishek Gupta, Justin Fu, Ashwin Reddy, Coline Devin, Benjamin Eysenbach, Sergey Levine. <em>Learning To Reach Goals Via Iterated Supervised Learning.</em></p>
 </blockquote>
 <p><a href="https://colab.research.google.com/github/notdibya/gcsl/blob/master/GCSLDemo.ipynb" target="_parent"><img src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667" alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
 <p>In this notebook, we develop a simple instantiation of the GCSL algorithm for solving goal-reaching tasks on a simple 2d navigation task with discrete actions to explain the algorithm. For a codebase with more complete features, please see the Github repository linked below.</p>
@@ -59,11 +59,11 @@
 $$s_0, a_0, s_1, a_1, s_2, \dots s_{50}, a_{50}$$<p>The agent might have done a terrible job at reaching $g^*$. It could be that the final state $s_{50}$ and $g^*$ are on opposite sides of the room. However, we know that the agent was able to successfully reach $s_{50}$, and we can use the data collected in the trajectory to teach the agent how to better get to $s_{50}$.</p>
 <p>For that matter, the agent was also able to reach $s_{49}, s_{48}, \dots$, and we can use this data to learn how to reach all of these states  more accurately.</p>
 <p>More precisely, consider any two timesteps $t_1$ and $t_2$ ($t_1 &lt; t_2$). We know that after the agent took action $a_{t_1}$ in state $s_{t_1}$, it reached the state $s_{t_2}$ after $t_2-t_1$ timesteps. This means that we can treat $a_{t_1}$ as being <strong>optimal</strong> behavior at $s_{t_1}$ when trying to reach $s_{t_2}$ in $t_2 - t_1$ timesteps.</p>
-<p><strong>GCSL:</strong> The algorithm performs a simple three-step procedure:</p>
+<p><strong>GCSL:</strong> Given the principle of hindsight, we can now introduce GCSL, the algorithm. Each iteration, the agent performs the following three steps:</p>
 <ol>
-<li>Collects a trajectory with the current agent</li>
+<li>Collects a trajectory with the current agent $\pi_k$</li>
 <li>Picks many choices of $t_1,t_2$ to create a dataset $\mathcal{D}$ of optimal data $\mathbf{x} = (s=s_{t_1}, g=s_{t_2}, h=t_2-t_1)$ and $\mathbf{y} = a_{t_1}$.</li>
-<li>Performs supervised learning (classification or regression depending on discrete actions) to have the policy produce output $\mathbf{y}$ when provided input $\mathbf{x}$.</li>
+<li>Performs supervised learning (classification or regression depending on discrete actions) to have the policy produce output $\mathbf{y}$ when provided input $\mathbf{x}$ to create a better policy $\pi_{k+1}$</li>
 </ol>
 <p>Formally, the policy is performing maximum-likelihood estimation (MLE) via supervised learning.</p>
 $$\arg\max_\theta \mathbb{E}_{((s,g,h), a) \sim \mathcal{D}}[\log \pi_\theta(a | s=s, g=g, h=h)]$$
