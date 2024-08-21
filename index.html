@@ -7,11 +7,11 @@ title: Home
 {% if post.published %}
 <div class="posts">
   <h2>
-    <a href="{{ site.github.url }}{{ post.url }}">{{ post.title }}</a>
+    <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
   </h2>
   {% if post.image %}
   <div class="thumbnail-container">
-    <a href="{{ site.github.url }}{{ post.url }}"><img src="{{ site.github.url }}/{{ post.image }}"></a>
+    <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}"><img src="{{ site.url }}{site.baseurl}/{{ post.image }}"></a>
   </div>
   {% endif %}
   <p>

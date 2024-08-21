@@ -1,0 +1,107 @@
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This post is the result of an afternoon detour spiraled from a joke over lunch: could one train a LLM with only 5 parameters (in the spirit of <a href="https://en.wikipedia.org/wiki/Von_Neumann%27s_elephant">Von Neumann's elephant</a>)? 5 parameters is of course silly,but there's an underlying real concern here: do we really need hundreds of billions of parameters in a language model, or is it just an artifact of how we've learned to train deep models? A lot of serious work has been done in earnest to study this question, including on model distillation, sparse pruning, quantization, low-rank adaptation, and more. But this blog post is just a quick look at some more light-hearted approaches.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-is-a-5-parameter-language-model???">What is a 5-parameter language model???<a class="anchor-link" href="#What-is-a-5-parameter-language-model???">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our goal will be to optimize a language model parameterized by $d$ parameters (where $d$ is a really small number) for next-token prediction. No cheating allowed by starting with pre-trained weights -- everything must be learned from scratch.</p>
+<p>How do we do this? We could use a small custom architecture with few params, but we know that the Transformer architecture works, and a lot of effort has gone into optimizing it. Instead, we'll try to reparameterize the same large transformer architecture, just with fewer trainable parameters.</p>
+<p>By default, any parameter $W \in \mathbb{R}^{m times n}$ in a transformer (e.g. the dense layer) "costs" $mn$ parameters (for a single dense layer, this is like 2 million params for GPT2, and 800 million params (!!) for LLAMA 405B). One way to reduce the number of trainable parameters is <a href="https://huggingface.co/docs/peft/main/en/conceptual_guides/lora">LoRA</a>, which splits this parameter into a random initialized (and fixed) matrix $W_{frozen}$ and a learned low-rank approximation $AB$.</p>
+$$\mathbf{W} = \mathbf{W_{frozen}} + \underbrace{\mathbf{A}}_{M \times r} \underbrace{\mathbf{B}}_{r \times N}$$<p>where $\mathbf{A} \in \mathbb{R}^{m \times r}$ and $\mathbf{B} \in \mathbb{R}^{r \times n}$ are our new learnable parameters. This drastically reduces the number of parameters (e.g. with common settings, 30k for GPT2 and 500k for LLAMA 405B), but is still way higher than our desired goal of 5 parameters.</p>
+<p>For our much lower budget, we'll instead define our weights as a linear combination of $d$ random matrices:</p>
+$$\mathbf{W} = \alpha_1 \mathbf{W}_{frozen}^1 + \alpha_2 \mathbf{W}_{frozen}^2 + \ldots + \alpha_d \mathbf{W}_{frozen}^d$$<p>where $\alpha_1, \alpha_2, \dots, \alpha_d$ are our new learnable parameters, and these matrices $\mathbf{W}_{frozen}^k$ are randomly initialized parameters.</p>
+<p>This formulation relates to a line of research studying the <strong>intrinsic dimensionality</strong> of neural networks, which posits that one doesn't need to optimize over <em>all</em> the dimensions of the parameter space to get low loss. The idea was popularized by <a href="https://arxiv.org/pdf/1804.08838">Li et al, 2018</a> for ConvNets, and was also explored to some degree of success in finetuning LLMs by <a href="https://arxiv.org/abs/2012.13255">Aghajanyan et al, 2020</a>.</p>
+<p>Here's a figure to illustrate
+<img src="{{site.url}}{{site.baseurl}}/assets/posts/gpt2smol/lowrank.png" alt="image.png"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Off-to-the-Races!">Off to the Races!<a class="anchor-link" href="#Off-to-the-Races!">&#182;</a></h3><p>To test our networks, I pre-trained a GPT2 model on the <em>C4 dataset</em> for roughly 1B tokens, with these different dimensionality reduction schemes based off of <a href="https://github.com/huggingface/transformers/blob/main/examples/flax/language-modeling/run_clm_flax.py">this nice example pre-training script from Huggingface</a>. I chose to not count embedding parameters in our budget, so that all the models learn something -- so the # being counted is the number of <em>non-embedding parameters</em>.</p>
+<p>I did no hyperparameter tuning was done, so take the raw numbers with a grain of salt.</p>
+<p><img src="{{site.url}}{{site.baseurl}}/assets/posts/gpt2smol/plot.png" alt="The Plot"></p>
+<p>Some notes:</p>
+<ul>
+<li>The 5 parameter model is not able to learn anything at all (it's completely hidden by the baseline of only training embeddings) This is not surprising, but it's still a bit sad.</li>
+<li>The ordering is as expected: the full model performs the best, followed by the LoRA model (20M params), followed by the 5-parameters-per-layer (2K params), followed by the 5-parameter model (5 params).</li>
+<li>There is a <em>giant</em> gap in performance between the full parameterization and any of the reduced models. Reducing this is an active area of research, and I'm not surprised that we're not able to get close to the full model's performance.</li>
+<li>I was a little surprised how good the performance is of the model that allots 5 parameters to each layer (which only has 1000 params!).</li>
+<li>Our poor 5-parameter model is not able to learn anything at all. This is not surprising, but it's still a bit sad.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="FAQ">FAQ<a class="anchor-link" href="#FAQ">&#182;</a></h3><ol>
+<li><p><strong>What are the advantages of this basis parameterization?</strong> Honestly, not much. It's harder to implement, slower, and less performant. The one main advantage is that the memory footprint of the model is much smaller, since the exemplar weights $\mathbf{W}_{frozen}^k$ never need to be stored anywhere -- they can be generated on-the-fly when requested so long as your hold onto the rng seed. (there's a caveat to this, see <a href="#parameter-scaling">Parameter scaling</a> below). For most real cases where you're not trying to squeeze into &lt; 1000 params, LoRA is practical and better.</p>
+</li>
+<li><p><strong>Is basis parameterization the same as LoRA?</strong> No, but it's subtle. This method optimizes over a low-rank subspace of the parameter space, and LoRA optimizes over the space of low-rank functions. LoRA forces the learned embeddings to a lower-dimensional representation, and then up-projects them to the full space. This method always keeps the embeddings in the original space, so in theory if we kept the number of trainable parameters the same, this method should be more expressive. Check the figure above for a visual view.</p>
+</li>
+<li><p><strong>What might have gone wrong?</strong> In this low-parameterization regime, it seems the method is a little fickle to how the linear combination was instantiated (e.g. how is $\alpha_i$ initialized, how is each $\mathbf{W}_{frozen}^i$ initialized). I didn't have time to investigate this further, but I suspect that this is the main reason why the 5-parameter model failed to learn anything, and why the 5-parameters-per-layer model performed poorly as well.</p>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Parameter-scaling">Parameter scaling<a class="anchor-link" href="#Parameter-scaling">&#182;</a></h3><p>The keen reader might notice that retrieving the weights $\mathbf{W}$ requires initializing $d$ random matrices $\mathbf{W}_{frozen}^i$ (although, thankfully not storing them). This is fine if $d=5$, but what if we want to scale this up to $d=1000$? For each dense layer in GPT2, this would be initializing 2B parameters! This is a non-starter!</p>
+<p>One really clever way to get around this is the <a href="https://proceedings.mlr.press/v28/le13.pdf">FastFood transform</a>, which I discovered through <a href="https://arxiv.org/pdf/1804.08838">Li et al, 2018</a> and <a href="https://arxiv.org/abs/2012.13255">Aghajanyan et al, 2020</a>.</p>
+<p>For setup, let's flatten $W$ to be a vector in $\mathbb{R}^{mn}$, and suppose that our initializer was normally distributed, then we can write 
+$$\mathbf{W} = \underbrace{\mathbf{X}}_{mn \times d}
+\alpha ~~~~~\text{where } X = \begin{bmatrix}
+\mathbf{W}_{frozen}^1 \\
+\mathbf{W}_{frozen}^2 \\
+\vdots \\
+\mathbf{W}_{frozen}^d
+\end{bmatrix}$$</p>
+<p>Then, $\mathbf{X}$ is a Gaussian matrix, and computing the parameters is equivalent to computing $\mathbf{X}\alpha$. Can we do this without materializing this giant $mn \times d$ matrix?</p>
+<p>Not exactly, but we can <em>approximately</em> by replacing $\mathbf{X}$ with a new matrix $\mathbf{X}'$ that "looks Gaussian" but can be much easier to compute. The best approximation used by the FastFood transform is a little complicated to summarize (check out the paper!), so I'll describe the simpler "FFT Fastfood" approximation:</p>
+$$\mathbf{X} \approx \Pi \mathbf{F} \mathbf{B}$$<p>where $\mathbf{F}$ is the Fourier transform matrix, $\mathbf{B}$ is a random sign matrix (i.e. diagonal with entries $\{-1, 1\}$), and $\Pi$ is a random permutation matrix. Computing $\mathbf{X'}\alpha$ is then equivalent to computing first randomly flipping the signs of $\alpha$, then applying the discrete Fourier transform, and finally permuting the rows of the result.</p>
+\begin{align*}
+\alpha &amp; ~~~~~~~~\text{Start with our trainable parameters} \\
+\mathbf{B} \alpha &amp;  ~~~~~~~~\text{Randomly flip the signs} \\
+\mathbf{F} \mathbf{B} \alpha &amp; ~~~~~~~~ \text{Apply the Fourier transform} \\
+\Pi \mathbf{F} \mathbf{B} \alpha &amp;  ~~~~~~~~\text{Permute the rows}
+\end{align*}
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="What's-the-Takeaway?">What's the Takeaway?<a class="anchor-link" href="#What's-the-Takeaway?">&#182;</a></h3><p>OK, so we can't train a language model with 5 parameters.  And also not with 1000 parameters. Or with 1M parameters. It's pretty cool how far we can get though at all with such few parameters -- I think it's a testament to how powerful the Transformer function class is, that even optimizing such a small set of parameters can model language to some degree.</p>
+<p>These ideas are of course more practical and useful in the finetuning regime: instead of doing low-rank perturbations on a random initialization, to do it on a good pre-trained base. Instead of doing an interpolation between random matrices, to do it between good (different) pre-trained bases. This is the focus of more serious research, not an afternoon's whimsy.</p>
+<p>So we can't train LLMs with 5 parameters, but at least we can still train elephants. Here's a rendition of Von Neumann's elephant I recreated from <a href="https://www.johndcook.com/blog/2011/06/21/how-to-fit-an-elephant/">John D Cook</a>, originally attributed to</p>
+
+<pre><code>“Drawing an elephant with four complex parameters” Jurgen Mayer, Khaled Khairy, and Jonathon Howard,  Am. J. Phys. 78, 648 (2010)
+
+</code></pre>
+<p><img src="{{site.url}}{{site.baseurl}}/assets/posts/gpt2smol/elephant.png" alt="image.png"></p>
+<p>I ran the experiments and wrote this post in a few hours, so there might be some small (or maybe bigger) mistakes. If you find any, please let me know!</p>
+
+</div>
+</div>
+</div>
+
+

@@ -4,7 +4,7 @@
       {% if item.url contains '://' %}
       <a href="{{ item.url }}">{{ item.name }}</a>
       {% else %}
-      <a href="{{ site.github.url }}/{{ item.path }}/{{ item.url }}">{{ item.name }}</a>
+      <a href="{{ site.url }}{{site.baseurl}}/{{ item.path }}/{{ item.url }}">{{ item.name }}</a>
       {% endif %}
 
     {% endfor %}

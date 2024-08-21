@@ -23,7 +23,10 @@ plugins:             [jekyll-paginate, jekyll-sitemap, jekyll-feed, jekyll-seo-t
 title:		           'The RL Probabilist'
 description:	       'A blog by Dibya Ghosh on topics in mathematics, reinforcement learning, and machine learning.'
 author:              'Dibya Ghosh'
-
+baseurl: "/blog" # the subpath of your site, e.g. /blog
+url: "https://dibyaghosh.com" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: its_dibya
+github_username:  dibyaghosh
 # RSS 2.0 can be used instead of Atom by uncommenting following two lines
 #feed:
 #  path: rss-feed.xml
