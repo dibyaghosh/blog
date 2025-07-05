@@ -7,5 +7,5 @@
 
   {{ .Content }}
 
-  <p><i>Find the source code for this post <a href="https://github.com/dibyaghosh/blog/blob/main/{{ .File.Path }}">here</a>.</i></p>
+  <p><i>Find the source code for this post <a href="https://github.com/dibyaghosh/blog/blob/master/content/{{ replace .File.Path ".md" ".ipynb" }}">here</a>.</i></p>
   {{ end }}
