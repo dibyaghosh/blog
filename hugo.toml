@@ -1,0 +1,19 @@
+baseURL = 'https://dibyaghosh.com/blog'
+languageCode = 'en-us'
+title = "Dibya's Blog"
+[markup.goldmark.renderer]
+    unsafe=true
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+  [markup.highlight]
+    codeFences = true
+    noClasses = true
+    style = "monokailight"
+[params]
+  math = true

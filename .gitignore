@@ -1,0 +1,19 @@
+# Hugo artifacts
+/public/
+/resources/
+.hugo_build.lock
+
+*_files/
+
+# Jekyll artifacts (legacy)
+_site
+Gemfile.lock
+.sass-cache
+.jekyll-metadata
+
+# System files
+.DS_Store
+nohup.out
+.ipynb_checkpoints/
+
+/.quarto/

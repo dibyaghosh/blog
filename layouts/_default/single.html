@@ -1,0 +1,11 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<p><i>{{ .Description }}</i></p>
+
+
+  <div style="border-bottom: 1px solid #ccc; margin: 20px 0;"></div>
+
+  {{ .Content }}
+
+  <p><i>Find the source code for this post <a href="https://github.com/dibyaghosh/blog/blob/main/{{ .File.Path }}">here</a>.</i></p>
+  {{ end }}

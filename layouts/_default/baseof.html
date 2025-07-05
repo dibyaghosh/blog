@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ .Site.Title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{ partial "google_analytics.html" . }}
+    {{ partial "opengraph.html" . }}
+    {{ partial "twitter_cards.html" . }}
+
+
+<style>
+        body { font-family:georgia,garamond,serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .date { color: #666; font-size: 0.9em; }
+        .post-list { list-style: none; padding: 0; }
+        .post-list li { margin-bottom: 10px; }
+        img { max-width: 100%; height: auto; }
+        blockquote {background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;}
+    </style>
+
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+    };
+</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+</head>
+<body>
+    <header>
+        <div style="float: right;">
+            <a href="{{ .Site.BaseURL }}">Home</a>
+            <div style="display: inline-block; width: 10px;"></div>
+            <a href="https://dibyaghosh.com">About</a>
+        </div>
+    </header>
+    <main>
+        {{ block "main" . }}{{ end }}
+    </main>
+</body>
+</html>
