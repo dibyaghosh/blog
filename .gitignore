@@ -17,3 +17,5 @@ nohup.out
 .ipynb_checkpoints/
 
 /.quarto/
+# Ignore markdown files in content directory
+/content/**/*.md
