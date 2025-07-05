@@ -17,3 +17,6 @@ title = "Dibya's Blog"
     style = "monokailight"
 [params]
   math = true
+[services]
+  [services.googleAnalytics]
+    id = 'G-R6Q8NVFVKS'
