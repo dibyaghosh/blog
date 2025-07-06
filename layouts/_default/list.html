@@ -1,11 +1,14 @@
 {{ define "main" }}
+<div class="row"></div>
 <h2>{{ .Title }}</h2>
-<ul class="post-list">
+<ul class="post-list no-bullets text-responsive">
 {{ range .Pages }}
     <li>
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
+        <a class="publication" href="{{ .Permalink }}"><strong>{{ .Title }}</strong></a>
+        <br />
         <span class="date">{{ .Date.Format "January 2, 2006" }}</span>
     </li>
 {{ end }}
 </ul>
+</div>
 {{ end }}

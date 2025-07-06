@@ -1,11 +1,36 @@
 {{ define "main" }}
-<h2>Posts</h2>
-<ul class="post-list">
+<!-- Copied from index.html-->
+<br /><br />
+<div class="row">
+    <div class="col-md-6">
+        <h1>Dibya Ghosh</h1><br /><br />
+I'm a final-year PhD student at UC Berkeley training large models using reinforcement learning.
+Previously, I was at Google Brain, Montréal. Even earlier, I did my undergrad at UC Berkeley.
+<br /><br />
+
+See my <a href="https://scholar.google.com/citations?user=znnl0kwAAAAJ">Google Scholar</a> for published work and <a href="https://dibyaghosh.com/blog/">blog</a> for more fun.
+<br /><br />
+
+My first name is pronounced "Dibbo". Reach me at dibya (at) berkeley (dot) edu. 
+
+<br /><br />
+
+
+<div style='color:white'>Find my old website <a style='color:white' href='old_index.html'>here</a></div>
+
+
+</div>
+</div>
+
+<h4 id="manuscripts">Blog Posts</h4>
+
+<ul class="post-list no-bullets text-responsive">
 {{ range .Site.RegularPages }}
     <li>
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
+        <a class="publication" href="{{ .Permalink }}"><strong>{{ .Title }}</strong></a>
         <span class="date">{{ .Date.Format "January 2, 2006" }}</span>
     </li>
 {{ end }}
 </ul>
+</div>
 {{ end }}
